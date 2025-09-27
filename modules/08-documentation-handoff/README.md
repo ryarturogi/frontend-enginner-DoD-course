@@ -55,8 +55,8 @@ Visit [http://localhost:3000](http://localhost:3000) to see the application.
 ## Technology Stack
 
 ### Core Technologies
-- **Frontend**: React 18, TypeScript 5, Next.js 14
-- **Styling**: Tailwind CSS 3, CSS Modules
+- **Frontend**: React 19, TypeScript 5, Next.js 15
+- **Styling**: Tailwind CSS 4, CSS Modules
 - **State Management**: Zustand, React Query
 - **Testing**: Jest, React Testing Library, Playwright
 - **Build Tools**: Turbo, ESBuild, SWC

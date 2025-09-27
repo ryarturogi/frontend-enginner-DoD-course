@@ -12,17 +12,22 @@ This course transforms frontend developers into production-ready engineers who c
 - ✅ Production-ready mindset and engineering principles
 - ✅ Definition of Done (DoD) for enterprise development
 - ✅ Comprehensive testing strategies and patterns
-- ✅ Performance optimization and monitoring
+- ✅ Advanced architecture and code organization
+- ✅ CI/CD and DevOps awareness for frontend engineers
+- ✅ Monitoring, observability, and performance optimization
 - ✅ Security and accessibility best practices
 - ✅ Team workflows and documentation standards
-- ✅ Real-world capstone project
+- ✅ Senior-level interview preparation
+- ✅ Production-ready capstone project
 
 ### Course Structure
-**Duration:** ~20 hours of study across 10 modules  
-**Format:** Theory + Practical exercises + Real-world examples  
-**Level:** Intermediate to Advanced
+**Duration:** ~40 hours of study across 15 comprehensive modules  
+**Format:** Theory + Practical exercises + Real-world examples + Interview prep  
+**Level:** Intermediate to Advanced → Senior Engineering
 
 ## 📚 Course Modules
+
+### **Foundation Modules (1-5)**
 
 ### [Module 1: Production-Ready Mindset](./modules/01-production-ready-mindset/)
 Understanding what production-ready means and why it matters in enterprise development.
@@ -39,6 +44,8 @@ Apply patterns using Jest, Vitest, React Testing Library, Playwright, and Cypres
 ### [Module 5: Production-Grade Code Practices](./modules/05-code-practices/)
 SOLID principles, error handling, TypeScript, state management, and architecture.
 
+### **Production Excellence Modules (6-10)**
+
 ### [Module 6: Performance & Monitoring](./modules/06-performance-monitoring/)
 Core Web Vitals, performance budgets, caching, and observability.
 
@@ -52,7 +59,24 @@ Technical documentation, ADRs, and maintainable code practices.
 Agile DoD, PR practices, branching strategies, and CI/CD integration.
 
 ### [Module 10: Capstone Project](./modules/10-capstone-project/)
-Build a production-ready feature applying all learned concepts.
+Build a production-ready e-commerce feature applying all learned concepts.
+
+### **Advanced Engineering Modules (11-15)**
+
+### [Module 11: Advanced Architecture & Code Organization](./modules/11-advanced-architecture/)
+Feature-based architecture, monorepo strategies, microfrontends, and scalable state management.
+
+### [Module 12: CI/CD & DevOps Awareness](./modules/12-cicd-devops/)
+Comprehensive CI/CD pipelines, containerization, feature flags, and deployment strategies.
+
+### [Module 13: Monitoring & Observability](./modules/13-monitoring-observability/)
+Error tracking, performance monitoring, structured logging, and production health metrics.
+
+### [Module 14: Performance Optimization](./modules/14-performance-optimization/)
+Advanced Core Web Vitals optimization, bundle optimization, caching strategies, and performance budgets.
+
+### [Module 15: Interview Preparation](./modules/15-interview-preparation/)
+Senior frontend engineer interview preparation with system design, coding challenges, and behavioral questions.
 
 ## 🚀 Getting Started
 
@@ -72,16 +96,22 @@ Build a production-ready feature applying all learned concepts.
 
 ### Development Tools
 - **TypeScript** (strict mode)
-- **React** (hooks, patterns)
+- **React** (hooks, patterns, advanced patterns)
 - **Next.js** (production features)
-- **State Management:** Context, Redux, Zustand
-- **API Layer:** SWR, React Query
+- **State Management:** Context, Redux Toolkit, Zustand
+- **API Layer:** SWR, React Query, RTK Query
+
+### Architecture & DevOps
+- **Architecture:** Microfrontends, Module Federation, Monorepos
+- **CI/CD:** GitHub Actions, Docker, Kubernetes
+- **Build Tools:** Webpack, Vite, advanced optimization
+- **Package Management:** NPM, Yarn, pnpm strategies
 
 ### Quality & Monitoring
-- **Performance:** Lighthouse, Core Web Vitals
-- **Monitoring:** Sentry, LogRocket
-- **Security:** OWASP guidelines
-- **Accessibility:** WCAG 2.1 compliance
+- **Performance:** Lighthouse, Core Web Vitals, Performance Budgets
+- **Monitoring:** Sentry, LogRocket, DataDog, New Relic
+- **Security:** OWASP guidelines, CSP, XSS prevention
+- **Accessibility:** WCAG 2.1 AA compliance, automated testing
 
 ## 📈 Learning Outcomes
 
@@ -90,25 +120,33 @@ By completing this course, you will:
 1. **Think Production-First:** Develop a mindset that prioritizes reliability, scalability, and maintainability
 2. **Master DoD:** Create and apply comprehensive Definition of Done checklists
 3. **Test Effectively:** Use appropriate testing patterns and strategies for different scenarios
-4. **Write Enterprise Code:** Follow SOLID principles and production-grade patterns
-5. **Optimize Performance:** Ensure applications meet Core Web Vitals standards
-6. **Secure Applications:** Implement security best practices and prevent common vulnerabilities
-7. **Document Professionally:** Create maintainable documentation and handoff materials
-8. **Collaborate Effectively:** Align with team workflows and agile practices
+4. **Architect Systems:** Design scalable frontend architectures with proper separation of concerns
+5. **Implement DevOps:** Set up CI/CD pipelines and deployment strategies for frontend applications
+6. **Monitor Production:** Implement comprehensive monitoring, observability, and performance tracking
+7. **Optimize Performance:** Master Core Web Vitals optimization and advanced performance techniques
+8. **Secure Applications:** Implement security best practices and prevent common vulnerabilities
+9. **Document Professionally:** Create maintainable documentation and handoff materials
+10. **Lead Teams:** Collaborate effectively, mentor junior developers, and align with agile practices
+11. **Interview Successfully:** Prepare for senior frontend engineer roles with confidence
 
 ## 🔗 Additional Resources
 
 ### Recommended Reading
 - **Clean Code** by Robert C. Martin
-- **Refactoring UI** by Adam Wathan
+- **Building Micro-Frontends** by Luca Mezzalira
 - **Testing JavaScript** by Kent C. Dodds
 - **Web Performance in Action** by Jeremy Wagner
+- **The Staff Engineer's Path** by Tanya Reilly
+- **Designing Data-Intensive Applications** by Martin Kleppmann
 
 ### Online Resources
 - [Web.dev Performance](https://web.dev/performance/)
 - [OWASP Frontend Security](https://owasp.org/www-project-top-ten/)
 - [WCAG Guidelines](https://www.w3.org/WAI/WCAG21/quickref/)
 - [Testing Library Docs](https://testing-library.com/)
+- [React Patterns](https://reactpatterns.com/)
+- [Frontend System Design](https://www.greatfrontend.com/system-design)
+- [Performance Budgets](https://web.dev/performance-budgets-101/)
 
 ## 🤝 Contributing
 
