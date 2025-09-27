@@ -170,5 +170,15 @@
     }
   },
   "active": "2977e856d26528c3",
-  "lastOpenFiles": []
+  "lastOpenFiles": [
+    "modules/13-monitoring-observability/README.md",
+    "modules/12-cicd-devops/README.md",
+    "modules/11-advanced-architecture/README.md",
+    "modules/15-interview-preparation",
+    "modules/14-performance-optimization",
+    "modules/13-monitoring-observability",
+    "modules/12-cicd-devops",
+    "modules/11-advanced-architecture",
+    "modules/10-capstone-project/README.md"
+  ]
 }
