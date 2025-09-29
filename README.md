@@ -6,13 +6,16 @@ A comprehensive course covering everything a frontend engineer must know to deli
 
 ## 🎯 Course Overview
 
-This course transforms frontend developers into production-ready engineers who can confidently ship enterprise-grade applications. You'll master the mindset, patterns, and practices that ensure your code meets the highest standards of quality, reliability, and maintainability.
+This course transforms frontend developers into production-ready engineers who can confidently ship enterprise-grade applications using the latest technologies. You'll master React 19, Next.js 15, modern testing patterns, and the critical Definition of Done (DoD) that separates hobby projects from production systems.
 
 ### What You'll Learn
 - ✅ Production-ready mindset and engineering principles
 - ✅ Definition of Done (DoD) for enterprise development
-- ✅ Comprehensive testing strategies and patterns
+- ✅ Comprehensive testing strategies with React 19 and Next.js 15
+- ✅ Component development with Storybook and visual testing
 - ✅ Advanced architecture and code organization
+- ✅ React 19 Actions, useOptimistic, and modern state management
+- ✅ Next.js 15 with Turbopack and async request APIs
 - ✅ CI/CD and DevOps awareness for frontend engineers
 - ✅ Monitoring, observability, and performance optimization
 - ✅ Security and accessibility best practices
@@ -39,10 +42,10 @@ Learn to define and apply DoD in real projects with enterprise-level checklists.
 Master testing strategies: AAA, GWT, SEAT, property-based testing, and more.
 
 ### [Module 4: Frontend Testing in Practice](./modules/04-testing-in-practice/)
-Apply patterns using Jest, Vitest, React Testing Library, Playwright, and Cypress.
+Apply patterns using Jest, Vitest, React Testing Library, Playwright, Cypress, and Storybook with Next.js 15 and React 19.
 
 ### [Module 5: Production-Grade Code Practices](./modules/05-code-practices/)
-SOLID principles, error handling, TypeScript, state management, and architecture.
+SOLID principles, error handling, TypeScript, React 19 Actions, Next.js 15 features, and modern architecture patterns.
 
 ### **Production Excellence Modules (6-10)**
 
@@ -85,27 +88,52 @@ Senior frontend engineer interview preparation with system design, coding challe
 3. **Study Path:** Follow modules sequentially or focus on specific areas
 4. **Practice:** Complete exercises and build the capstone project
 
+## 🆕 Latest Updates
+
+### **React 19 & Next.js 15 Integration**
+- **React 19 Actions**: Learn `useActionState` and `useOptimistic` for modern form handling
+- **Custom Elements Support**: Integrate web components seamlessly with React
+- **Next.js 15 Turbopack**: Faster development builds and enhanced performance
+- **Async Request APIs**: Improved caching and data fetching patterns
+
+### **Enhanced Testing with Storybook**
+- **Component Development**: Isolated component development and testing
+- **Visual Testing**: Automated visual regression testing with Chromatic
+- **Accessibility Testing**: Built-in a11y testing in every story
+- **Performance Testing**: Performance budgets and Core Web Vitals monitoring
+- **MSW Integration**: API mocking in Storybook for realistic testing
+
+### **Modern Testing Patterns**
+- **React 19 Testing**: Complete patterns for testing Actions and optimistic updates
+- **Next.js 15 Testing**: App Router testing with Turbopack integration
+- **Storybook Test Runner**: Automated testing within component stories
+- **Visual Regression**: Chromatic integration for visual testing
+
 ## 🛠 Tools & Technologies Covered
 
 ### Testing Stack
 - **Unit Testing:** Jest, Vitest
 - **Integration Testing:** React Testing Library
 - **E2E Testing:** Playwright, Cypress
-- **Accessibility Testing:** axe-core
+- **Component Testing:** Storybook Test Runner
 - **Visual Testing:** Chromatic, Percy
+- **Accessibility Testing:** axe-core, Storybook a11y addon
+- **React 19 Testing:** Actions, useOptimistic, Custom Elements
 
 ### Development Tools
 - **TypeScript** (strict mode)
-- **React** (hooks, patterns, advanced patterns)
-- **Next.js** (production features)
-- **State Management:** Context, Redux Toolkit, Zustand
+- **React 19** (Actions, useOptimistic, Custom Elements, improved hydration)
+- **Next.js 15** (Turbopack, async request APIs, enhanced error handling)
+- **Storybook 8+** (component development, visual testing, accessibility testing)
+- **State Management:** Context, Redux Toolkit, Zustand, React 19 Actions
 - **API Layer:** SWR, React Query, RTK Query
 
 ### Architecture & DevOps
 - **Architecture:** Microfrontends, Module Federation, Monorepos
 - **CI/CD:** GitHub Actions, Docker, Kubernetes
-- **Build Tools:** Webpack, Vite, advanced optimization
+- **Build Tools:** Webpack, Vite, Turbopack (Next.js 15), advanced optimization
 - **Package Management:** NPM, Yarn, pnpm strategies
+- **Component Development:** Storybook, Design Systems, Visual Testing
 
 ### Quality & Monitoring
 - **Performance:** Lighthouse, Core Web Vitals, Performance Budgets
