@@ -781,7 +781,7 @@
 #### **Leadership & Impact** (10% weight)
 - [ ] **Technical Leadership**: Led technical decisions and architecture
 - [ ] **Team Enablement**: Improved team productivity and quality
-- [ ] **Process Improvement**: Enhanced development processes
+- [ ] **Process Improvement**: Improved development processes
 - [ ] **Innovation**: Introduced new technologies or practices
 - [ ] **Business Impact**: Delivered measurable business value
 
