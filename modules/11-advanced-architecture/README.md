@@ -1,18 +1,1170 @@
-# Module 11: Advanced Architecture & Code Organization
+# Module 11: Enterprise Architecture & Scalable Systems
 
 ## 🎯 Learning Objectives
 
 By the end of this module, you will:
-- Master feature-based architecture that scales with team growth
-- Understand when to choose monorepo vs polyrepo strategies
-- Implement microfrontends with Module Federation when appropriate
-- Design clean separation between UI, business logic, and data layers
-- Choose and implement scalable state management patterns
-- Create architecture that supports both current needs and future growth
+- Master domain-driven design principles for frontend applications at enterprise scale
+- Architect resilient systems using hexagonal architecture and clean architecture patterns
+- Implement advanced micro-frontend architectures with Module Federation and runtime orchestration
+- Design fault-tolerant, distributed frontend systems with graceful degradation
+- Build scalable event-driven architectures with CQRS and event sourcing patterns
+- Create self-healing systems with circuit breakers, retry mechanisms, and chaos engineering
+- Implement comprehensive observability and telemetry for distributed frontend systems
+- Design architecture that scales from thousands to millions of concurrent users
 
-## 🏗️ Feature-Based Architecture
+## 🏛️ Enterprise Architecture Principles
 
-### Why Feature-Based Architecture Matters
+### Architectural Thinking at Scale
+
+Enterprise architecture goes beyond code organization—it's about building systems that can evolve, scale, and adapt to changing business requirements while maintaining stability and performance under extreme load.
+
+#### Core Architectural Principles
+
+```typescript
+// Enterprise Architecture Principles
+interface EnterpriseArchitecture {
+  // Scalability Principles
+  scalability: {
+    horizontal: 'Scale by adding more instances';
+    vertical: 'Scale by adding more power to existing instances';
+    elastic: 'Auto-scale based on demand';
+    distributed: 'Distribute load across multiple systems';
+  };
+  
+  // Reliability Principles
+  reliability: {
+    faultTolerance: 'System continues operating despite component failures';
+    gracefulDegradation: 'Reduced functionality rather than complete failure';
+    circuitBreakers: 'Prevent cascading failures';
+    bulkheading: 'Isolate failures to prevent system-wide impact';
+  };
+  
+  // Performance Principles
+  performance: {
+    caching: 'Multiple layers of intelligent caching';
+    cdnOptimization: 'Global content distribution';
+    bundleOptimization: 'Optimal code splitting and loading strategies';
+    resourceHints: 'Predictive resource loading';
+  };
+  
+  // Security Principles
+  security: {
+    zeroTrust: 'Never trust, always verify';
+    depthInDefense: 'Multiple layers of security controls';
+    principleOfLeastPrivilege: 'Minimum necessary access';
+    securityByDesign: 'Security built into architecture, not bolted on';
+  };
+  
+  // Observability Principles
+  observability: {
+    telemetry: 'Comprehensive metrics, logs, and traces';
+    monitoring: 'Real-time system health visibility';
+    alerting: 'Proactive issue detection and notification';
+    debugging: 'Rapid issue identification and resolution';
+  };
+}
+```
+
+### Hexagonal Architecture for Frontend
+
+```typescript
+// Hexagonal Architecture (Ports and Adapters) for Frontend Applications
+// Core Domain - Business Logic (Center)
+export interface ProductDomainService {
+  searchProducts(criteria: SearchCriteria): Promise<SearchResult>;
+  getProductDetails(id: ProductId): Promise<Product>;
+  addToCart(productId: ProductId, quantity: number): Promise<CartResult>;
+}
+
+// Ports - Interfaces (Define contracts)
+export interface ProductRepository {
+  findById(id: ProductId): Promise<Product | null>;
+  search(criteria: SearchCriteria): Promise<Product[]>;
+  save(product: Product): Promise<void>;
+}
+
+export interface CartRepository {
+  getCart(userId: UserId): Promise<Cart>;
+  addItem(userId: UserId, item: CartItem): Promise<void>;
+  removeItem(userId: UserId, itemId: string): Promise<void>;
+}
+
+export interface NotificationPort {
+  sendNotification(message: NotificationMessage): Promise<void>;
+}
+
+export interface AnalyticsPort {
+  trackEvent(event: AnalyticsEvent): void;
+  trackUserBehavior(behavior: UserBehavior): void;
+}
+
+// Adapters - Implementations (Outer layer)
+export class HttpProductRepository implements ProductRepository {
+  constructor(private httpClient: HttpClient) {}
+  
+  async findById(id: ProductId): Promise<Product | null> {
+    try {
+      const response = await this.httpClient.get(`/api/products/${id}`);
+      return ProductMapper.toDomain(response.data);
+    } catch (error) {
+      if (error.status === 404) return null;
+      throw new ProductRepositoryError('Failed to fetch product', error);
+    }
+  }
+  
+  async search(criteria: SearchCriteria): Promise<Product[]> {
+    const queryParams = SearchCriteriaMapper.toQueryParams(criteria);
+    const response = await this.httpClient.get('/api/products/search', queryParams);
+    return response.data.map(ProductMapper.toDomain);
+  }
+}
+
+export class IndexedDBCartRepository implements CartRepository {
+  private dbName = 'ecommerce-cart';
+  private version = 1;
+  
+  async getCart(userId: UserId): Promise<Cart> {
+    const db = await this.openDatabase();
+    const transaction = db.transaction(['carts'], 'readonly');
+    const store = transaction.objectStore('carts');
+    const cartData = await store.get(userId);
+    
+    return cartData ? CartMapper.toDomain(cartData) : new Cart(userId);
+  }
+  
+  async addItem(userId: UserId, item: CartItem): Promise<void> {
+    const cart = await this.getCart(userId);
+    cart.addItem(item);
+    
+    const db = await this.openDatabase();
+    const transaction = db.transaction(['carts'], 'readwrite');
+    const store = transaction.objectStore('carts');
+    await store.put(CartMapper.toPersistence(cart));
+  }
+}
+
+// Domain Service Implementation
+export class ProductDomainServiceImpl implements ProductDomainService {
+  constructor(
+    private productRepo: ProductRepository,
+    private cartRepo: CartRepository,
+    private notifications: NotificationPort,
+    private analytics: AnalyticsPort
+  ) {}
+  
+  async searchProducts(criteria: SearchCriteria): Promise<SearchResult> {
+    // Domain validation
+    if (!criteria.isValid()) {
+      throw new InvalidSearchCriteriaError(criteria.getValidationErrors());
+    }
+    
+    // Track search analytics
+    this.analytics.trackEvent({
+      type: 'product_search',
+      data: { query: criteria.query, filters: criteria.filters }
+    });
+    
+    // Execute search
+    const products = await this.productRepo.search(criteria);
+    
+    // Apply business rules
+    const filteredProducts = products.filter(product => 
+      product.isAvailable() && product.meetsQualityStandards()
+    );
+    
+    return new SearchResult(filteredProducts, criteria);
+  }
+  
+  async addToCart(productId: ProductId, quantity: number): Promise<CartResult> {
+    // Fetch product with business rules validation
+    const product = await this.productRepo.findById(productId);
+    if (!product) {
+      throw new ProductNotFoundError(productId);
+    }
+    
+    // Domain validation
+    const validationResult = product.canAddToCart(quantity);
+    if (!validationResult.isValid) {
+      throw new InvalidCartOperationError(validationResult.errors);
+    }
+    
+    // Get current user (from context or auth service)
+    const userId = this.getCurrentUserId();
+    const cartItem = new CartItem(product, quantity);
+    
+    // Add to cart
+    await this.cartRepo.addItem(userId, cartItem);
+    
+    // Business events
+    this.analytics.trackEvent({
+      type: 'product_added_to_cart',
+      data: { productId, quantity, userId }
+    });
+    
+    // Send notification for high-value items
+    if (product.price.isHighValue()) {
+      await this.notifications.sendNotification({
+        type: 'high_value_cart_addition',
+        userId,
+        data: { product, quantity }
+      });
+    }
+    
+    return new CartResult(true, 'Product added to cart successfully');
+  }
+}
+```
+
+### Clean Architecture Implementation
+
+```typescript
+// Clean Architecture Layers for Frontend
+
+// 1. Entities (Core Business Objects)
+export class Product {
+  constructor(
+    private id: ProductId,
+    private name: string,
+    private price: Money,
+    private inventory: Inventory,
+    private specifications: ProductSpecifications
+  ) {}
+  
+  // Business logic methods
+  isAvailable(): boolean {
+    return this.inventory.hasStock() && !this.isDiscontinued();
+  }
+  
+  canAddToCart(quantity: number): ValidationResult {
+    if (quantity <= 0) {
+      return ValidationResult.failure('Quantity must be positive');
+    }
+    
+    if (!this.isAvailable()) {
+      return ValidationResult.failure('Product is not available');
+    }
+    
+    if (quantity > this.inventory.availableQuantity) {
+      return ValidationResult.failure(`Only ${this.inventory.availableQuantity} items available`);
+    }
+    
+    return ValidationResult.success();
+  }
+  
+  calculateTotalPrice(quantity: number, discounts: Discount[]): Money {
+    let basePrice = this.price.multiply(quantity);
+    
+    for (const discount of discounts) {
+      if (discount.appliesTo(this)) {
+        basePrice = discount.apply(basePrice);
+      }
+    }
+    
+    return basePrice;
+  }
+}
+
+// 2. Use Cases (Application Business Rules)
+export class SearchProductsUseCase {
+  constructor(
+    private productRepository: ProductRepository,
+    private searchAnalytics: SearchAnalyticsService,
+    private cacheService: CacheService,
+    private logger: Logger
+  ) {}
+  
+  async execute(request: SearchProductsRequest): Promise<SearchProductsResponse> {
+    const startTime = performance.now();
+    
+    try {
+      // Validate input
+      const validationResult = this.validateRequest(request);
+      if (!validationResult.isValid) {
+        throw new ValidationError(validationResult.errors);
+      }
+      
+      // Check cache first
+      const cacheKey = this.generateCacheKey(request);
+      const cachedResult = await this.cacheService.get<SearchResult>(cacheKey);
+      
+      if (cachedResult && !this.isCacheStale(cachedResult)) {
+        this.logger.info('Cache hit for search request', { cacheKey });
+        return this.mapToResponse(cachedResult);
+      }
+      
+      // Execute search
+      const searchCriteria = this.mapToSearchCriteria(request);
+      const products = await this.productRepository.search(searchCriteria);
+      
+      // Apply business filters
+      const filteredProducts = this.applyBusinessFilters(products, request);
+      
+      // Sort results
+      const sortedProducts = this.applySorting(filteredProducts, request.sortBy);
+      
+      // Paginate
+      const paginatedResult = this.applyPagination(sortedProducts, request.pagination);
+      
+      // Cache result
+      const searchResult = new SearchResult(paginatedResult, request);
+      await this.cacheService.set(cacheKey, searchResult, { ttl: 300 }); // 5 minutes
+      
+      // Track analytics
+      this.searchAnalytics.trackSearch({
+        query: request.query,
+        filters: request.filters,
+        resultCount: paginatedResult.length,
+        duration: performance.now() - startTime
+      });
+      
+      return this.mapToResponse(searchResult);
+      
+    } catch (error) {
+      this.logger.error('Search products failed', { request, error });
+      throw error;
+    }
+  }
+  
+  private applyBusinessFilters(products: Product[], request: SearchProductsRequest): Product[] {
+    return products.filter(product => {
+      // Apply availability filter
+      if (request.onlyAvailable && !product.isAvailable()) {
+        return false;
+      }
+      
+      // Apply quality standards
+      if (!product.meetsQualityStandards()) {
+        return false;
+      }
+      
+      // Apply regional restrictions
+      if (!product.isAvailableInRegion(request.region)) {
+        return false;
+      }
+      
+      return true;
+    });
+  }
+}
+
+// 3. Interface Adapters (Adapters/Controllers)
+export class ProductSearchController {
+  constructor(private searchProductsUseCase: SearchProductsUseCase) {}
+  
+  async searchProducts(httpRequest: HttpRequest): Promise<HttpResponse> {
+    try {
+      // Map HTTP request to use case request
+      const searchRequest = this.mapHttpRequestToUseCaseRequest(httpRequest);
+      
+      // Execute use case
+      const response = await this.searchProductsUseCase.execute(searchRequest);
+      
+      // Map use case response to HTTP response
+      return {
+        status: 200,
+        data: this.mapUseCaseResponseToHttpResponse(response),
+        headers: {
+          'Cache-Control': 'public, max-age=300',
+          'X-Total-Count': response.totalCount.toString()
+        }
+      };
+      
+    } catch (error) {
+      return this.handleError(error);
+    }
+  }
+  
+  private handleError(error: Error): HttpResponse {
+    if (error instanceof ValidationError) {
+      return {
+        status: 400,
+        data: { error: 'Invalid request', details: error.details }
+      };
+    }
+    
+    if (error instanceof ProductNotFoundError) {
+      return {
+        status: 404,
+        data: { error: 'Product not found' }
+      };
+    }
+    
+    // Log unexpected errors
+    console.error('Unexpected error in product search', error);
+    
+    return {
+      status: 500,
+      data: { error: 'Internal server error' }
+    };
+  }
+}
+
+// 4. Frameworks & Drivers (External interfaces)
+export class NextJsProductSearchAdapter {
+  constructor(private controller: ProductSearchController) {}
+  
+  // Next.js API route handler
+  async handle(req: NextApiRequest, res: NextApiResponse) {
+    const httpRequest = {
+      query: req.query,
+      body: req.body,
+      headers: req.headers,
+      method: req.method
+    };
+    
+    const httpResponse = await this.controller.searchProducts(httpRequest);
+    
+    res.status(httpResponse.status);
+    
+    if (httpResponse.headers) {
+      Object.entries(httpResponse.headers).forEach(([key, value]) => {
+        res.setHeader(key, value);
+      });
+    }
+    
+    res.json(httpResponse.data);
+  }
+}
+```
+
+## 🛡️ Fault-Tolerant & Resilient Systems
+
+### Circuit Breaker Pattern Implementation
+
+```typescript
+// Circuit Breaker for Frontend Services
+export class CircuitBreaker {
+  private state: 'CLOSED' | 'OPEN' | 'HALF_OPEN' = 'CLOSED';
+  private failureCount = 0;
+  private lastFailureTime?: Date;
+  private nextAttemptTime?: Date;
+  
+  constructor(
+    private failureThreshold: number = 5,
+    private timeout: number = 60000, // 1 minute
+    private monitoringWindow: number = 120000 // 2 minutes
+  ) {}
+  
+  async execute<T>(operation: () => Promise<T>, fallback?: () => Promise<T>): Promise<T> {
+    if (this.state === 'OPEN') {
+      if (this.shouldAttemptReset()) {
+        this.state = 'HALF_OPEN';
+      } else {
+        return this.handleOpenCircuit(fallback);
+      }
+    }
+    
+    try {
+      const result = await operation();
+      this.onSuccess();
+      return result;
+    } catch (error) {
+      this.onFailure();
+      
+      if (fallback) {
+        try {
+          return await fallback();
+        } catch (fallbackError) {
+          throw error; // Throw original error if fallback fails
+        }
+      }
+      
+      throw error;
+    }
+  }
+  
+  private onSuccess(): void {
+    this.failureCount = 0;
+    this.state = 'CLOSED';
+  }
+  
+  private onFailure(): void {
+    this.failureCount++;
+    this.lastFailureTime = new Date();
+    
+    if (this.failureCount >= this.failureThreshold) {
+      this.state = 'OPEN';
+      this.nextAttemptTime = new Date(Date.now() + this.timeout);
+    }
+  }
+  
+  private shouldAttemptReset(): boolean {
+    return this.nextAttemptTime ? Date.now() >= this.nextAttemptTime.getTime() : false;
+  }
+  
+  private async handleOpenCircuit<T>(fallback?: () => Promise<T>): Promise<T> {
+    if (fallback) {
+      return await fallback();
+    }
+    throw new CircuitBreakerOpenError('Circuit breaker is OPEN. Service temporarily unavailable.');
+  }
+}
+
+// Service implementation with circuit breaker
+export class ResilientProductService {
+  private searchCircuitBreaker = new CircuitBreaker(3, 30000); // 3 failures, 30s timeout
+  private detailsCircuitBreaker = new CircuitBreaker(5, 60000); // 5 failures, 1min timeout
+  
+  constructor(
+    private productApi: ProductApiService,
+    private cacheService: CacheService,
+    private fallbackService: FallbackProductService
+  ) {}
+  
+  async searchProducts(criteria: SearchCriteria): Promise<SearchResult> {
+    return this.searchCircuitBreaker.execute(
+      async () => {
+        const result = await this.productApi.search(criteria);
+        
+        // Cache successful results
+        await this.cacheService.set(
+          `search:${this.hashCriteria(criteria)}`,
+          result,
+          { ttl: 300 }
+        );
+        
+        return result;
+      },
+      async () => {
+        // Fallback to cache or degraded service
+        const cachedResult = await this.cacheService.get(`search:${this.hashCriteria(criteria)}`);
+        
+        if (cachedResult) {
+          return { ...cachedResult, fromCache: true };
+        }
+        
+        // Fallback to simplified search
+        return this.fallbackService.basicSearch(criteria);
+      }
+    );
+  }
+  
+  async getProductDetails(productId: string): Promise<Product> {
+    return this.detailsCircuitBreaker.execute(
+      async () => {
+        return await this.productApi.getProductDetails(productId);
+      },
+      async () => {
+        // Fallback to cached data or basic info
+        const cached = await this.cacheService.get(`product:${productId}`);
+        if (cached) {
+          return { ...cached, degraded: true };
+        }
+        
+        return this.fallbackService.getBasicProductInfo(productId);
+      }
+    );
+  }
+}
+```
+
+### Retry Mechanisms with Exponential Backoff
+
+```typescript
+// Advanced Retry Strategy
+export class RetryStrategy {
+  constructor(
+    private maxRetries: number = 3,
+    private baseDelay: number = 1000,
+    private maxDelay: number = 30000,
+    private backoffMultiplier: number = 2,
+    private jitterFactor: number = 0.1
+  ) {}
+  
+  async execute<T>(
+    operation: () => Promise<T>,
+    shouldRetry: (error: Error, attempt: number) => boolean = this.defaultShouldRetry
+  ): Promise<T> {
+    let lastError: Error;
+    
+    for (let attempt = 1; attempt <= this.maxRetries + 1; attempt++) {
+      try {
+        return await operation();
+      } catch (error) {
+        lastError = error as Error;
+        
+        if (attempt > this.maxRetries || !shouldRetry(error as Error, attempt)) {
+          throw error;
+        }
+        
+        const delay = this.calculateDelay(attempt);
+        await this.sleep(delay);
+      }
+    }
+    
+    throw lastError!;
+  }
+  
+  private calculateDelay(attempt: number): number {
+    // Exponential backoff with jitter
+    let delay = Math.min(
+      this.baseDelay * Math.pow(this.backoffMultiplier, attempt - 1),
+      this.maxDelay
+    );
+    
+    // Add jitter to prevent thundering herd
+    const jitter = delay * this.jitterFactor * Math.random();
+    delay += jitter;
+    
+    return Math.floor(delay);
+  }
+  
+  private defaultShouldRetry(error: Error, attempt: number): boolean {
+    // Retry on network errors, 5xx errors, but not on 4xx client errors
+    if (error.name === 'NetworkError' || error.name === 'TimeoutError') {
+      return true;
+    }
+    
+    if ('status' in error) {
+      const status = (error as any).status;
+      return status >= 500 || status === 408 || status === 429; // Server errors, timeout, rate limit
+    }
+    
+    return false;
+  }
+  
+  private sleep(ms: number): Promise<void> {
+    return new Promise(resolve => setTimeout(resolve, ms));
+  }
+}
+
+// Implementation with monitoring
+export class ResilientApiClient {
+  private retryStrategy = new RetryStrategy(3, 1000, 10000);
+  
+  constructor(
+    private httpClient: HttpClient,
+    private metrics: MetricsService,
+    private logger: Logger
+  ) {}
+  
+  async request<T>(
+    endpoint: string,
+    options: RequestOptions = {}
+  ): Promise<T> {
+    const startTime = performance.now();
+    const requestId = crypto.randomUUID();
+    
+    this.logger.debug('API request started', { endpoint, requestId });
+    
+    try {
+      const result = await this.retryStrategy.execute(
+        async () => {
+          const response = await this.httpClient.request(endpoint, {
+            ...options,
+            timeout: options.timeout || 10000,
+            headers: {
+              ...options.headers,
+              'X-Request-ID': requestId,
+            }
+          });
+          
+          return response;
+        },
+        (error, attempt) => {
+          this.logger.warn('API request failed, considering retry', {
+            endpoint,
+            requestId,
+            attempt,
+            error: error.message
+          });
+          
+          // Custom retry logic
+          if (endpoint.includes('/critical/')) {
+            return attempt <= 5; // More retries for critical endpoints
+          }
+          
+          return this.defaultRetryLogic(error, attempt);
+        }
+      );
+      
+      const duration = performance.now() - startTime;
+      
+      this.metrics.recordApiRequest({
+        endpoint,
+        status: 'success',
+        duration,
+        requestId
+      });
+      
+      this.logger.debug('API request succeeded', { endpoint, requestId, duration });
+      
+      return result;
+      
+    } catch (error) {
+      const duration = performance.now() - startTime;
+      
+      this.metrics.recordApiRequest({
+        endpoint,
+        status: 'failure',
+        duration,
+        error: error.message,
+        requestId
+      });
+      
+      this.logger.error('API request failed after retries', {
+        endpoint,
+        requestId,
+        duration,
+        error
+      });
+      
+      throw error;
+    }
+  }
+  
+  private defaultRetryLogic(error: Error, attempt: number): boolean {
+    // Don't retry auth errors or validation errors
+    if ('status' in error) {
+      const status = (error as any).status;
+      if (status === 401 || status === 403 || (status >= 400 && status < 500)) {
+        return false;
+      }
+    }
+    
+    return attempt <= 3;
+  }
+}
+```
+
+### Graceful Degradation Strategies
+
+```typescript
+// Feature Flag System for Graceful Degradation
+export class FeatureFlagService {
+  private flags = new Map<string, FeatureFlag>();
+  private cache = new Map<string, { value: boolean; expires: number }>();
+  
+  constructor(
+    private flagProvider: FeatureFlagProvider,
+    private logger: Logger
+  ) {}
+  
+  async isEnabled(flagName: string, context?: FeatureFlagContext): Promise<boolean> {
+    try {
+      // Check cache first
+      const cached = this.cache.get(flagName);
+      if (cached && cached.expires > Date.now()) {
+        return cached.value;
+      }
+      
+      // Fetch flag value
+      const flag = await this.flagProvider.getFlag(flagName);
+      const enabled = this.evaluateFlag(flag, context);
+      
+      // Cache result
+      this.cache.set(flagName, {
+        value: enabled,
+        expires: Date.now() + 30000 // 30 seconds
+      });
+      
+      return enabled;
+      
+    } catch (error) {
+      this.logger.error('Feature flag evaluation failed', { flagName, error });
+      
+      // Fail open or closed based on flag configuration
+      const fallback = this.getFallbackValue(flagName);
+      return fallback;
+    }
+  }
+  
+  private evaluateFlag(flag: FeatureFlag, context?: FeatureFlagContext): boolean {
+    if (!flag.enabled) return false;
+    
+    // Percentage rollout
+    if (flag.rolloutPercentage < 100) {
+      const hash = this.hashContext(context);
+      const bucket = hash % 100;
+      if (bucket >= flag.rolloutPercentage) return false;
+    }
+    
+    // Target conditions
+    if (flag.conditions && context) {
+      return this.evaluateConditions(flag.conditions, context);
+    }
+    
+    return true;
+  }
+  
+  private getFallbackValue(flagName: string): boolean {
+    // Define safe fallbacks for critical features
+    const safeFallbacks = {
+      'ai-search': false, // Disable AI search if flag service fails
+      'advanced-filters': false, // Disable advanced filtering
+      'real-time-inventory': false, // Fall back to cached inventory
+      'personalization': false, // Disable personalization
+      'payment-processing': true, // Keep payment enabled (critical)
+      'user-authentication': true, // Keep auth enabled (critical)
+    };
+    
+    return safeFallbacks[flagName] ?? false;
+  }
+}
+
+// Degraded Service Implementation
+export class DegradedProductService {
+  constructor(
+    private featureFlags: FeatureFlagService,
+    private primaryService: ProductService,
+    private fallbackService: BasicProductService,
+    private cacheService: CacheService
+  ) {}
+  
+  async searchProducts(criteria: SearchCriteria): Promise<SearchResult> {
+    // Check if AI search is available
+    const aiSearchEnabled = await this.featureFlags.isEnabled('ai-search', {
+      userId: criteria.userId,
+      region: criteria.region
+    });
+    
+    if (aiSearchEnabled) {
+      try {
+        return await this.primaryService.searchWithAI(criteria);
+      } catch (error) {
+        // Log degradation
+        console.warn('AI search failed, falling back to basic search', error);
+      }
+    }
+    
+    // Fallback to basic search
+    return this.fallbackService.basicSearch(criteria);
+  }
+  
+  async getProductRecommendations(productId: string): Promise<Product[]> {
+    const personalizationEnabled = await this.featureFlags.isEnabled('personalization');
+    
+    if (personalizationEnabled) {
+      try {
+        return await this.primaryService.getPersonalizedRecommendations(productId);
+      } catch (error) {
+        console.warn('Personalization failed, using static recommendations', error);
+      }
+    }
+    
+    // Fallback to static popular products
+    return this.fallbackService.getPopularProducts();
+  }
+  
+  async getInventoryStatus(productId: string): Promise<InventoryStatus> {
+    const realTimeEnabled = await this.featureFlags.isEnabled('real-time-inventory');
+    
+    if (realTimeEnabled) {
+      try {
+        return await this.primaryService.getRealTimeInventory(productId);
+      } catch (error) {
+        console.warn('Real-time inventory failed, using cached data', error);
+      }
+    }
+    
+    // Fallback to cached inventory data
+    const cached = await this.cacheService.get(`inventory:${productId}`);
+    return cached || { status: 'unknown', quantity: 0, lastUpdated: new Date() };
+  }
+}
+```
+
+### Event-Driven Architecture with CQRS
+
+```typescript
+// Command Query Responsibility Segregation (CQRS) Implementation
+// Commands - Write operations
+export interface AddToCartCommand {
+  userId: string;
+  productId: string;
+  quantity: number;
+  sessionId: string;
+  timestamp: Date;
+}
+
+export interface UpdateInventoryCommand {
+  productId: string;
+  newQuantity: number;
+  reason: 'sale' | 'restock' | 'adjustment';
+  operatorId: string;
+}
+
+// Events - Domain events
+export interface ProductAddedToCartEvent {
+  eventId: string;
+  eventType: 'ProductAddedToCart';
+  aggregateId: string; // cartId
+  aggregateVersion: number;
+  data: {
+    userId: string;
+    productId: string;
+    quantity: number;
+    price: number;
+    timestamp: Date;
+  };
+  metadata: {
+    correlationId: string;
+    causationId: string;
+    userId: string;
+  };
+}
+
+export interface InventoryUpdatedEvent {
+  eventId: string;
+  eventType: 'InventoryUpdated';
+  aggregateId: string; // productId
+  aggregateVersion: number;
+  data: {
+    productId: string;
+    previousQuantity: number;
+    newQuantity: number;
+    reason: string;
+    timestamp: Date;
+  };
+}
+
+// Event Store
+export class EventStore {
+  private events: Map<string, Event[]> = new Map();
+  private eventBus: EventBus;
+  
+  constructor(eventBus: EventBus) {
+    this.eventBus = eventBus;
+  }
+  
+  async appendEvents(aggregateId: string, events: Event[], expectedVersion: number): Promise<void> {
+    const existingEvents = this.events.get(aggregateId) || [];
+    
+    if (existingEvents.length !== expectedVersion) {
+      throw new ConcurrencyError('Aggregate version mismatch');
+    }
+    
+    // Append events
+    const updatedEvents = [...existingEvents, ...events];
+    this.events.set(aggregateId, updatedEvents);
+    
+    // Publish events to event bus
+    for (const event of events) {
+      await this.eventBus.publish(event);
+    }
+  }
+  
+  async getEvents(aggregateId: string, fromVersion: number = 0): Promise<Event[]> {
+    const events = this.events.get(aggregateId) || [];
+    return events.slice(fromVersion);
+  }
+  
+  async getSnapshot(aggregateId: string): Promise<AggregateSnapshot | null> {
+    // Implementation for snapshot loading
+    return null;
+  }
+}
+
+// Aggregate Root
+export class CartAggregate {
+  private id: string;
+  private version: number = 0;
+  private items: CartItem[] = [];
+  private uncommittedEvents: Event[] = [];
+  
+  constructor(id: string) {
+    this.id = id;
+  }
+  
+  static fromHistory(events: Event[]): CartAggregate {
+    const cart = new CartAggregate(events[0]?.aggregateId || '');
+    
+    for (const event of events) {
+      cart.applyEvent(event);
+      cart.version++;
+    }
+    
+    return cart;
+  }
+  
+  addProduct(productId: string, quantity: number, userId: string): void {
+    // Business logic validation
+    if (quantity <= 0) {
+      throw new InvalidOperationError('Quantity must be positive');
+    }
+    
+    const existingItem = this.items.find(item => item.productId === productId);
+    
+    if (existingItem) {
+      // Update quantity
+      const newQuantity = existingItem.quantity + quantity;
+      
+      if (newQuantity > 10) { // Business rule: max 10 items per product
+        throw new BusinessRuleViolationError('Maximum 10 items per product allowed');
+      }
+      
+      this.raiseEvent({
+        eventId: crypto.randomUUID(),
+        eventType: 'CartItemQuantityUpdated',
+        aggregateId: this.id,
+        aggregateVersion: this.version + 1,
+        data: {
+          productId,
+          previousQuantity: existingItem.quantity,
+          newQuantity,
+          userId,
+          timestamp: new Date()
+        }
+      });
+    } else {
+      // Add new item
+      this.raiseEvent({
+        eventId: crypto.randomUUID(),
+        eventType: 'ProductAddedToCart',
+        aggregateId: this.id,
+        aggregateVersion: this.version + 1,
+        data: {
+          productId,
+          quantity,
+          userId,
+          timestamp: new Date()
+        }
+      });
+    }
+  }
+  
+  private raiseEvent(event: Event): void {
+    this.uncommittedEvents.push(event);
+    this.applyEvent(event);
+  }
+  
+  private applyEvent(event: Event): void {
+    switch (event.eventType) {
+      case 'ProductAddedToCart':
+        this.items.push({
+          productId: event.data.productId,
+          quantity: event.data.quantity,
+          addedAt: event.data.timestamp
+        });
+        break;
+        
+      case 'CartItemQuantityUpdated':
+        const item = this.items.find(i => i.productId === event.data.productId);
+        if (item) {
+          item.quantity = event.data.newQuantity;
+        }
+        break;
+    }
+  }
+  
+  getUncommittedEvents(): Event[] {
+    return this.uncommittedEvents;
+  }
+  
+  markEventsAsCommitted(): void {
+    this.uncommittedEvents = [];
+  }
+}
+
+// Command Handler
+export class AddToCartCommandHandler {
+  constructor(
+    private eventStore: EventStore,
+    private productService: ProductService
+  ) {}
+  
+  async handle(command: AddToCartCommand): Promise<void> {
+    // Load aggregate
+    const events = await this.eventStore.getEvents(command.userId);
+    const cart = CartAggregate.fromHistory(events);
+    
+    // Validate product exists and is available
+    const product = await this.productService.getProduct(command.productId);
+    if (!product || !product.isAvailable()) {
+      throw new ProductNotAvailableError(command.productId);
+    }
+    
+    // Execute business logic
+    cart.addProduct(command.productId, command.quantity, command.userId);
+    
+    // Persist events
+    const uncommittedEvents = cart.getUncommittedEvents();
+    await this.eventStore.appendEvents(command.userId, uncommittedEvents, cart.version);
+    
+    cart.markEventsAsCommitted();
+  }
+}
+
+// Query Side - Read Models
+export class CartReadModel {
+  constructor(private database: Database) {}
+  
+  async getCart(userId: string): Promise<CartView | null> {
+    const result = await this.database.query(
+      'SELECT * FROM cart_views WHERE user_id = ?',
+      [userId]
+    );
+    
+    return result[0] || null;
+  }
+  
+  async getCartItems(userId: string): Promise<CartItemView[]> {
+    return await this.database.query(
+      'SELECT * FROM cart_item_views WHERE user_id = ? ORDER BY added_at DESC',
+      [userId]
+    );
+  }
+}
+
+// Event Projection
+export class CartProjection {
+  constructor(private database: Database) {}
+  
+  async project(event: Event): Promise<void> {
+    switch (event.eventType) {
+      case 'ProductAddedToCart':
+        await this.handleProductAddedToCart(event as ProductAddedToCartEvent);
+        break;
+        
+      case 'CartItemQuantityUpdated':
+        await this.handleCartItemQuantityUpdated(event);
+        break;
+    }
+  }
+  
+  private async handleProductAddedToCart(event: ProductAddedToCartEvent): Promise<void> {
+    await this.database.execute(
+      `INSERT INTO cart_item_views (user_id, product_id, quantity, added_at, last_updated)
+       VALUES (?, ?, ?, ?, ?)
+       ON DUPLICATE KEY UPDATE quantity = quantity + VALUES(quantity), last_updated = VALUES(last_updated)`,
+      [
+        event.data.userId,
+        event.data.productId,
+        event.data.quantity,
+        event.data.timestamp,
+        event.data.timestamp
+      ]
+    );
+    
+    // Update cart totals
+    await this.updateCartTotals(event.data.userId);
+  }
+  
+  private async updateCartTotals(userId: string): Promise<void> {
+    // Calculate and update cart totals in read model
+    const totals = await this.database.query(
+      `SELECT COUNT(*) as item_count, SUM(quantity) as total_quantity, SUM(price * quantity) as total_amount
+       FROM cart_item_views WHERE user_id = ?`,
+      [userId]
+    );
+    
+    await this.database.execute(
+      `INSERT INTO cart_views (user_id, item_count, total_quantity, total_amount, last_updated)
+       VALUES (?, ?, ?, ?, NOW())
+       ON DUPLICATE KEY UPDATE 
+         item_count = VALUES(item_count),
+         total_quantity = VALUES(total_quantity),
+         total_amount = VALUES(total_amount),
+         last_updated = VALUES(last_updated)`,
+      [userId, totals[0].item_count, totals[0].total_quantity, totals[0].total_amount]
+    );
+  }
+}
+```
+
+## 🏗️ Advanced Feature-Based Architecture
+
+### Domain-Driven Design for Frontend
 
 Traditional folder-by-type structures break down as applications grow:
 

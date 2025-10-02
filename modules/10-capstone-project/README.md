@@ -1,19 +1,23 @@
-# Module 10: Capstone Project - Production-Ready E-commerce Feature
+# Module 10: Capstone Project - Enterprise E-commerce Platform
 
 ## 🎯 Project Overview
 
-Build a complete, production-ready e-commerce feature that demonstrates mastery of all course concepts. You'll create an advanced product search and filtering system with shopping cart integration that meets enterprise standards.
+Build a comprehensive, enterprise-grade e-commerce platform that demonstrates mastery of all course concepts. You'll create an advanced product discovery system with intelligent search, real-time inventory management, and sophisticated cart functionality that meets Fortune 500 standards.
+
+This capstone integrates cutting-edge technologies including React 19 Server Components, Next.js 15 App Router, advanced streaming patterns, and modern observability practices to deliver a production-ready system capable of handling millions of users.
 
 ## 📋 Project Requirements
 
-### Core Feature: Advanced Product Search & Cart Management
+### Core Platform: Intelligent Product Discovery & Commerce Engine
 
-Build a sophisticated product discovery system with:
-- **Intelligent Search**: Full-text search with autocomplete and suggestions
-- **Advanced Filtering**: Category, price range, ratings, availability filters
-- **Smart Sorting**: Relevance, price, rating, popularity sorting
-- **Shopping Cart**: Add to cart, quantity management, persistence
-- **User Experience**: Loading states, error handling, responsive design
+Build a sophisticated e-commerce platform with:
+- **AI-Powered Search**: Vector-based semantic search with natural language processing
+- **Real-time Personalization**: ML-driven recommendations and dynamic pricing
+- **Advanced Inventory Management**: Real-time stock tracking with predictive analytics
+- **Intelligent Cart System**: Persistent cart with abandonment recovery and cross-sell optimization
+- **Enterprise UX**: Streaming data, optimistic updates, and progressive web app capabilities
+- **Multi-tenant Architecture**: Support for multiple storefronts and brands
+- **Global Commerce**: Multi-currency, internationalization, and regional compliance
 
 ### Production Standards Required
 
@@ -28,88 +32,241 @@ Your implementation must demonstrate ALL course concepts:
 7. **Complete Documentation** (Module 8)
 8. **Team Workflow Ready** (Module 9)
 
-## 🏗️ Architecture Requirements
+## 🏗️ Enterprise Architecture Requirements
 
-### Feature-Based Architecture
+### Domain-Driven Design with Micro-Frontends
 
 ```
-src/
-├── features/
-│   ├── product-search/
-│   │   ├── components/
-│   │   │   ├── SearchBar/
-│   │   │   ├── SearchResults/
-│   │   │   ├── ProductFilters/
-│   │   │   └── SearchSuggestions/
-│   │   ├── hooks/
-│   │   │   ├── useProductSearch.ts
-│   │   │   ├── useSearchSuggestions.ts
-│   │   │   └── useSearchAnalytics.ts
-│   │   ├── services/
-│   │   │   ├── searchApi.ts
-│   │   │   └── searchCache.ts
-│   │   ├── types/
-│   │   │   └── search.types.ts
-│   │   └── utils/
-│   │       ├── searchHelpers.ts
-│   │       └── filterLogic.ts
-│   ├── shopping-cart/
-│   │   ├── components/
-│   │   │   ├── CartDrawer/
-│   │   │   ├── CartItem/
-│   │   │   └── CartSummary/
-│   │   ├── hooks/
-│   │   │   ├── useShoppingCart.ts
-│   │   │   └── useCartPersistence.ts
-│   │   ├── services/
-│   │   │   └── cartApi.ts
-│   │   ├── types/
-│   │   │   └── cart.types.ts
-│   │   └── store/
-│   │       └── cartStore.ts
-│   └── shared/
-│       ├── components/
-│       ├── hooks/
-│       ├── utils/
-│       └── types/
-├── lib/
-├── pages/
-└── styles/
+apps/
+├── commerce-platform/          # Main e-commerce application
+│   ├── src/
+│   │   ├── app/               # Next.js 15 App Router
+│   │   │   ├── (marketing)/
+│   │   │   ├── (commerce)/
+│   │   │   ├── (admin)/
+│   │   │   └── api/
+│   │   ├── domains/           # Domain-driven design
+│   │   │   ├── catalog/
+│   │   │   │   ├── components/
+│   │   │   │   │   ├── SearchInterface/
+│   │   │   │   │   ├── ProductGrid/
+│   │   │   │   │   ├── FilterSystem/
+│   │   │   │   │   └── RecommendationEngine/
+│   │   │   │   ├── hooks/
+│   │   │   │   │   ├── useSemanticSearch.ts
+│   │   │   │   │   ├── useVectorSimilarity.ts
+│   │   │   │   │   └── useProductAnalytics.ts
+│   │   │   │   ├── services/
+│   │   │   │   │   ├── catalogApi.ts
+│   │   │   │   │   ├── searchEngine.ts
+│   │   │   │   │   └── vectorStore.ts
+│   │   │   │   ├── repositories/
+│   │   │   │   │   ├── ProductRepository.ts
+│   │   │   │   │   └── CategoryRepository.ts
+│   │   │   │   └── types/
+│   │   │   │       ├── catalog.types.ts
+│   │   │   │       └── search.types.ts
+│   │   │   ├── commerce/
+│   │   │   │   ├── components/
+│   │   │   │   │   ├── CartSystem/
+│   │   │   │   │   ├── CheckoutFlow/
+│   │   │   │   │   ├── PaymentGateway/
+│   │   │   │   │   └── OrderManagement/
+│   │   │   │   ├── hooks/
+│   │   │   │   │   ├── useCartState.ts
+│   │   │   │   │   ├── useCheckoutFlow.ts
+│   │   │   │   │   └── usePaymentProcessing.ts
+│   │   │   │   ├── services/
+│   │   │   │   │   ├── cartService.ts
+│   │   │   │   │   ├── paymentService.ts
+│   │   │   │   │   └── orderService.ts
+│   │   │   │   └── state/
+│   │   │   │       ├── cartStore.ts
+│   │   │   │       └── orderStore.ts
+│   │   │   ├── inventory/
+│   │   │   │   ├── components/
+│   │   │   │   │   ├── StockTracker/
+│   │   │   │   │   ├── AvailabilityIndicator/
+│   │   │   │   │   └── ReorderAlerts/
+│   │   │   │   ├── hooks/
+│   │   │   │   │   ├── useRealTimeInventory.ts
+│   │   │   │   │   ├── useStockPrediction.ts
+│   │   │   │   │   └── useInventoryAlerts.ts
+│   │   │   │   └── services/
+│   │   │   │       ├── inventoryApi.ts
+│   │   │   │       ├── warehouseSync.ts
+│   │   │   │       └── stockPredictor.ts
+│   │   │   ├── personalization/
+│   │   │   │   ├── components/
+│   │   │   │   │   ├── RecommendationWidget/
+│   │   │   │   │   ├── PersonalizedPricing/
+│   │   │   │   │   └── UserPreferences/
+│   │   │   │   ├── hooks/
+│   │   │   │   │   ├── usePersonalization.ts
+│   │   │   │   │   ├── useRecommendations.ts
+│   │   │   │   │   └── useBehaviorTracking.ts
+│   │   │   │   └── services/
+│   │   │   │       ├── mlEngine.ts
+│   │   │   │       ├── personalizationApi.ts
+│   │   │   │       └── behaviorAnalytics.ts
+│   │   │   └── shared/
+│   │   │       ├── components/
+│   │   │       ├── hooks/
+│   │   │       ├── utils/
+│   │   │       ├── types/
+│   │   │       └── constants/
+│   │   ├── infrastructure/
+│   │   │   ├── api/
+│   │   │   │   ├── clients/
+│   │   │   │   ├── middleware/
+│   │   │   │   └── types/
+│   │   │   ├── database/
+│   │   │   │   ├── migrations/
+│   │   │   │   ├── seeders/
+│   │   │   │   └── schemas/
+│   │   │   ├── monitoring/
+│   │   │   │   ├── metrics/
+│   │   │   │   ├── tracing/
+│   │   │   │   └── logging/
+│   │   │   └── security/
+│   │   │       ├── auth/
+│   │   │       ├── encryption/
+│   │   │       └── validation/
+│   │   └── tests/
+│   │       ├── unit/
+│   │       ├── integration/
+│   │       ├── e2e/
+│   │       └── performance/
+├── micro-frontends/          # Federated modules
+│   ├── product-catalog/
+│   ├── user-account/
+│   └── admin-dashboard/
+├── shared-libraries/         # Shared packages
+│   ├── ui-components/
+│   ├── design-system/
+│   ├── business-logic/
+│   └── utilities/
+└── infrastructure/          # DevOps and tooling
+    ├── docker/
+    ├── kubernetes/
+    ├── terraform/
+    └── scripts/
 ```
 
-### Technology Stack Requirements
+### Enterprise Technology Stack
 
 ```typescript
-// Required technologies to demonstrate modern practices
-interface TechStack {
-  framework: 'Next.js 15';
+// Production-grade technology stack for enterprise e-commerce
+interface EnterpriseTechStack {
+  // Core Framework
+  framework: 'Next.js 15' | 'Remix';
   language: 'TypeScript 5+';
-  styling: 'Tailwind CSS 4' | 'styled-components';
-  stateManagement: 'Zustand' | 'Redux Toolkit';
-  serverState: 'React Query' | 'SWR';
+  runtime: 'Node.js 20+' | 'Bun';
+  
+  // Frontend Architecture
+  rendering: {
+    server: 'React 19 Server Components';
+    client: 'React 19 Client Components';
+    streaming: 'Suspense with Server Actions';
+    hydration: 'Selective hydration';
+  };
+  
+  // Styling & Design
+  styling: 'Tailwind CSS 4' | 'Stitches' | 'Vanilla Extract';
+  designSystem: {
+    components: 'Radix UI' | 'Headless UI';
+    tokens: 'Design tokens with Theme UI';
+    documentation: 'Storybook 8+';
+  };
+  
+  // State Management
+  stateManagement: {
+    server: 'React Query v5' | 'SWR' | 'Apollo Client';
+    client: 'Zustand' | 'Valtio' | 'Redux Toolkit';
+    forms: 'React Hook Form with Zod';
+    url: 'Nuqs' | 'Next.js searchParams';
+  };
+  
+  // Data Layer
+  database: {
+    primary: 'PostgreSQL' | 'PlanetScale MySQL';
+    cache: 'Redis' | 'Upstash';
+    search: 'Elasticsearch' | 'Typesense' | 'Algolia';
+    vector: 'Pinecone' | 'Weaviate' | 'Qdrant';
+  };
+  
+  // API & Backend
+  api: {
+    framework: 'tRPC' | 'GraphQL with Pothos';
+    validation: 'Zod schemas';
+    authentication: 'NextAuth.js' | 'Clerk' | 'Auth0';
+    payments: 'Stripe' | 'PayPal';
+    email: 'Resend' | 'SendGrid';
+  };
+  
+  // Testing Strategy
   testing: {
-    unit: 'Jest' | 'Vitest';
+    unit: 'Vitest' | 'Jest';
     integration: 'React Testing Library';
     e2e: 'Playwright' | 'Cypress';
+    visual: 'Chromatic' | 'Percy';
+    performance: 'Lighthouse CI';
+    load: 'k6' | 'Artillery';
   };
+  
+  // Quality Assurance
   quality: {
-    linting: 'ESLint';
-    formatting: 'Prettier';
+    linting: 'ESLint 9 with TypeScript';
+    formatting: 'Prettier with plugins';
     typeChecking: 'TypeScript strict mode';
+    security: 'Snyk' | 'OWASP ZAP';
+    dependencyCheck: 'Renovate' | 'Dependabot';
   };
+  
+  // Performance & Monitoring
   performance: {
-    bundling: 'Next.js built-in';
-    monitoring: 'Web Vitals';
-    optimization: 'Image optimization, lazy loading';
+    bundling: 'Next.js 15 Turbopack';
+    monitoring: 'Vercel Analytics' | 'Sentry Performance';
+    vitals: 'Web Vitals with custom metrics';
+    cdn: 'Vercel Edge' | 'Cloudflare';
+    optimization: 'Sharp image processing';
   };
+  
+  // Security Infrastructure
   security: {
-    validation: 'Zod' | 'Yup';
-    sanitization: 'DOMPurify';
-    csp: 'Content Security Policy';
+    validation: 'Zod with runtime type checking';
+    sanitization: 'DOMPurify with CSP';
+    authentication: 'OAuth 2.0 with PKCE';
+    authorization: 'RBAC with CASL';
+    encryption: 'Node.js crypto with Argon2';
+    secrets: 'HashiCorp Vault' | 'AWS Secrets Manager';
+    headers: 'Security headers with Helmet.js';
   };
+  
+  // Accessibility & Internationalization
   accessibility: {
-    testing: 'axe-core';
-    implementation: 'WCAG 2.1 AA';
+    testing: 'axe-core with Playwright';
+    implementation: 'WCAG 2.2 AA compliance';
+    screenReader: 'NVDA and VoiceOver testing';
+    automation: 'axe-playwright integration';
+  };
+  
+  // DevOps & Infrastructure
+  infrastructure: {
+    deployment: 'Vercel' | 'Railway' | 'AWS Amplify';
+    containerization: 'Docker with multi-stage builds';
+    orchestration: 'Kubernetes' | 'Docker Swarm';
+    cicd: 'GitHub Actions' | 'GitLab CI';
+    monitoring: 'DataDog' | 'New Relic' | 'Grafana';
+    logging: 'Structured logging with Pino';
+  };
+  
+  // AI/ML Integration
+  artificialIntelligence: {
+    search: 'OpenAI Embeddings' | 'Cohere';
+    recommendations: 'TensorFlow.js' | 'Vercel AI SDK';
+    personalization: 'Custom ML models';
+    analytics: 'Google Analytics 4 with ML insights';
   };
 }
 ```
@@ -171,24 +328,29 @@ interface TechStack {
 
 ### ✅ Performance Requirements (All Required)
 
-- [ ] **Core Web Vitals**
-  - [ ] LCP < 2.5s
-  - [ ] FID < 100ms
-  - [ ] CLS < 0.1
-  - [ ] INP < 200ms
+- [ ] **Core Web Vitals Excellence**
+  - [ ] LCP < 1.5s (Largest Contentful Paint)
+  - [ ] INP < 100ms (Interaction to Next Paint - replacing FID)
+  - [ ] CLS < 0.05 (Cumulative Layout Shift)
+  - [ ] TTFB < 200ms (Time to First Byte)
+  - [ ] FCP < 1.0s (First Contentful Paint)
 
-- [ ] **Optimization Techniques**
-  - [ ] Code splitting implemented
-  - [ ] Lazy loading for non-critical components
-  - [ ] Image optimization with Next.js Image
-  - [ ] Bundle size analyzed and optimized
-  - [ ] Caching strategies implemented
+- [ ] **Advanced Optimization Techniques**
+  - [ ] React 19 Server Components for zero-bundle server logic
+  - [ ] Streaming with Suspense boundaries for progressive loading
+  - [ ] Edge runtime deployment for global performance
+  - [ ] Bundle splitting with Next.js App Router automatic optimization
+  - [ ] Image optimization with Sharp and WebP/AVIF formats
+  - [ ] Critical path optimization with resource hints
+  - [ ] Service Worker implementation for offline functionality
 
-- [ ] **Performance Monitoring**
-  - [ ] Web Vitals tracking
-  - [ ] Bundle analyzer integration
-  - [ ] Lighthouse CI integration
-  - [ ] Performance regression testing
+- [ ] **Real-Time Performance Monitoring**
+  - [ ] Web Vitals tracking with custom metrics
+  - [ ] Real User Monitoring (RUM) implementation
+  - [ ] Performance regression testing in CI/CD
+  - [ ] Bundle analyzer with size budgets
+  - [ ] Core Web Vitals alerts and monitoring
+  - [ ] Performance debugging tools integration
 
 ### ✅ Security Implementation (All Required)
 
@@ -268,82 +430,461 @@ interface TechStack {
 
 ## 🛠️ Implementation Guide
 
-### Phase 1: Foundation Setup (Week 1)
+### Phase 1: Enterprise Foundation (Week 1-2)
 
-#### Project Architecture Setup
+#### Advanced Project Architecture with Domain Models
 
 ```typescript
-// Project structure and core types
-// src/types/global.types.ts
+// src/domains/shared/types/core.types.ts
 export interface Product {
-  id: string;
+  id: ProductId;
   name: string;
   description: string;
-  price: number;
-  originalPrice?: number;
-  images: string[];
+  shortDescription?: string;
+  price: Money;
+  originalPrice?: Money;
+  images: ProductImage[];
   category: ProductCategory;
-  rating: number;
-  reviewCount: number;
-  inStock: boolean;
-  stockQuantity: number;
-  tags: string[];
-  createdAt: Date;
-  updatedAt: Date;
+  subcategories: ProductSubcategory[];
+  rating: ProductRating;
+  reviews: ProductReview[];
+  inventory: InventoryStatus;
+  variants: ProductVariant[];
+  attributes: ProductAttribute[];
+  seo: SEOMetadata;
+  timestamps: EntityTimestamps;
+  tenant: TenantId;
+}
+
+// Advanced type system with branded types
+export type ProductId = string & { readonly brand: unique symbol };
+export type UserId = string & { readonly brand: unique symbol };
+export type TenantId = string & { readonly brand: unique symbol };
+
+export interface Money {
+  amount: number;
+  currency: CurrencyCode;
+  formattedValue: string;
+}
+
+export interface ProductImage {
+  id: string;
+  url: string;
+  altText: string;
+  width: number;
+  height: number;
+  priority: number;
+  variants: ImageVariant[];
 }
 
 export interface SearchFilters {
   query: string;
+  semanticQuery?: string; // AI-powered semantic search
   category?: ProductCategory[];
-  priceRange?: { min: number; max: number };
-  rating?: number;
-  inStock?: boolean;
-  sortBy: 'relevance' | 'price-asc' | 'price-desc' | 'rating' | 'newest';
-}
-
-export interface CartItem {
-  product: Product;
-  quantity: number;
-  addedAt: Date;
+  priceRange?: MoneyRange;
+  rating?: RatingFilter;
+  availability?: AvailabilityFilter;
+  attributes?: AttributeFilter[];
+  sortBy: SortOption;
+  pagination: PaginationParams;
+  personalization?: PersonalizationContext;
 }
 
 export interface SearchResult {
   products: Product[];
   totalCount: number;
   facets: SearchFacets;
-  suggestions: string[];
+  suggestions: SearchSuggestion[];
+  query: ProcessedQuery;
+  filters: AppliedFilters;
+  analytics: SearchAnalytics;
+  recommendations: RecommendedProduct[];
+}
+
+export interface CartItem {
+  id: CartItemId;
+  product: Product;
+  variant?: ProductVariant;
+  quantity: number;
+  customizations?: ProductCustomization[];
+  pricing: CartItemPricing;
+  addedAt: Date;
+  lastUpdated: Date;
+  source: CartItemSource;
+}
+
+// Vector search types for AI-powered features
+export interface ProductEmbedding {
+  productId: ProductId;
+  vector: Float32Array;
+  metadata: EmbeddingMetadata;
+  lastUpdated: Date;
+}
+
+export interface SemanticSearchQuery {
   query: string;
-  filters: SearchFilters;
+  embedding: Float32Array;
+  threshold: number;
+  limit: number;
+  filters?: VectorSearchFilters;
 }
 ```
 
-#### Core Infrastructure
+#### Next.js 15 App Router with Server Components
 
 ```typescript
-// src/lib/api-client.ts - Type-safe API client
-export class ApiClient {
+// src/app/(commerce)/products/page.tsx - Server Component
+import { Suspense } from 'react';
+import { searchProducts } from '@/domains/catalog/services/searchService';
+import { ProductGrid } from '@/domains/catalog/components/ProductGrid';
+import { SearchInterface } from '@/domains/catalog/components/SearchInterface';
+import { FilterSidebar } from '@/domains/catalog/components/FilterSidebar';
+import { ProductGridSkeleton } from '@/domains/catalog/components/ProductGridSkeleton';
+
+interface ProductsPageProps {
+  searchParams: {
+    q?: string;
+    category?: string[];
+    minPrice?: string;
+    maxPrice?: string;
+    sort?: string;
+    page?: string;
+  };
+}
+
+export default async function ProductsPage({ searchParams }: ProductsPageProps) {
+  // Server-side search processing with caching
+  const searchResult = await searchProducts({
+    query: searchParams.q ?? '',
+    category: searchParams.category,
+    priceRange: {
+      min: Number(searchParams.minPrice) || 0,
+      max: Number(searchParams.maxPrice) || Infinity,
+    },
+    sortBy: searchParams.sort as SortOption ?? 'relevance',
+    pagination: {
+      page: Number(searchParams.page) || 1,
+      limit: 24,
+    },
+  });
+
+  return (
+    <div className="flex min-h-screen">
+      {/* Server Component for initial state */}
+      <FilterSidebar 
+        facets={searchResult.facets} 
+        initialFilters={searchParams}
+      />
+      
+      <main className="flex-1 p-6">
+        {/* Client Component for interactive search */}
+        <SearchInterface 
+          initialQuery={searchParams.q} 
+          suggestions={searchResult.suggestions}
+        />
+        
+        {/* Suspense boundary for streaming */}
+        <Suspense fallback={<ProductGridSkeleton />}>
+          <ProductGrid 
+            products={searchResult.products}
+            totalCount={searchResult.totalCount}
+            currentPage={Number(searchParams.page) || 1}
+          />
+        </Suspense>
+      </main>
+    </div>
+  );
+}
+
+// src/app/(commerce)/products/loading.tsx
+export default function ProductsLoading() {
+  return <ProductGridSkeleton />;
+}
+
+// src/app/(commerce)/products/error.tsx
+'use client';
+
+export default function ProductsError({
+  error,
+  reset,
+}: {
+  error: Error & { digest?: string };
+  reset: () => void;
+}) {
+  return (
+    <div className="flex flex-col items-center justify-center min-h-[400px]">
+      <h2 className="text-xl font-semibold mb-4">Something went wrong!</h2>
+      <button
+        onClick={reset}
+        className="px-4 py-2 bg-blue-600 text-white rounded hover:bg-blue-700"
+      >
+        Try again
+      </button>
+    </div>
+  );
+}
+```
+
+#### Enterprise API Layer with tRPC
+
+```typescript
+// src/server/api/routers/catalog.ts
+import { z } from 'zod';
+import { createTRPCRouter, publicProcedure } from '@/server/api/trpc';
+import { ProductRepository } from '@/domains/catalog/repositories/ProductRepository';
+import { SearchService } from '@/domains/catalog/services/SearchService';
+import { VectorSearchService } from '@/domains/catalog/services/VectorSearchService';
+
+const searchInputSchema = z.object({
+  query: z.string().min(0).max(200),
+  semanticSearch: z.boolean().optional(),
+  filters: z.object({
+    category: z.array(z.string()).optional(),
+    priceRange: z.object({
+      min: z.number().min(0),
+      max: z.number().min(0),
+    }).optional(),
+    rating: z.number().min(1).max(5).optional(),
+    availability: z.enum(['in-stock', 'out-of-stock', 'backorder']).optional(),
+  }).optional(),
+  sort: z.enum(['relevance', 'price-asc', 'price-desc', 'rating', 'newest']).default('relevance'),
+  pagination: z.object({
+    page: z.number().min(1).default(1),
+    limit: z.number().min(1).max(100).default(24),
+  }).default({ page: 1, limit: 24 }),
+});
+
+export const catalogRouter = createTRPCRouter({
+  searchProducts: publicProcedure
+    .input(searchInputSchema)
+    .query(async ({ input, ctx }) => {
+      const { query, semanticSearch, filters, sort, pagination } = input;
+      
+      // Use vector search for semantic queries
+      if (semanticSearch && query.trim()) {
+        return await VectorSearchService.semanticSearch({
+          query,
+          filters,
+          sort,
+          pagination,
+          userId: ctx.session?.user?.id,
+        });
+      }
+      
+      // Traditional full-text search
+      return await SearchService.search({
+        query,
+        filters,
+        sort,
+        pagination,
+        userId: ctx.session?.user?.id,
+      });
+    }),
+
+  getProductById: publicProcedure
+    .input(z.object({ id: z.string() }))
+    .query(async ({ input }) => {
+      return await ProductRepository.findById(input.id);
+    }),
+
+  getRecommendations: publicProcedure
+    .input(z.object({
+      productId: z.string().optional(),
+      userId: z.string().optional(),
+      type: z.enum(['similar', 'frequently-bought', 'trending', 'personalized']),
+      limit: z.number().min(1).max(20).default(8),
+    }))
+    .query(async ({ input }) => {
+      return await RecommendationService.getRecommendations(input);
+    }),
+});
+```
+
+#### Enterprise Infrastructure Layer
+
+```typescript
+// src/infrastructure/api/api-client.ts - Enterprise API client with observability
+import { z } from 'zod';
+import { trace, context, SpanStatusCode } from '@opentelemetry/api';
+
+export class EnterpriseApiClient {
   private baseUrl: string;
+  private tracer = trace.getTracer('api-client');
   
   constructor(baseUrl: string) {
     this.baseUrl = baseUrl;
   }
   
-  async request<T>(endpoint: string, options?: RequestInit): Promise<T> {
-    const response = await fetch(`${this.baseUrl}${endpoint}`, {
-      headers: {
-        'Content-Type': 'application/json',
-        ...options?.headers,
-      },
-      ...options,
-    });
+  async request<T>(
+    endpoint: string, 
+    options: RequestOptions = {},
+    schema?: z.ZodSchema<T>
+  ): Promise<T> {
+    const span = this.tracer.startSpan(`api.${endpoint.replace('/', '.')}`);
     
-    if (!response.ok) {
-      throw new ApiError(response.status, await response.text());
+    try {
+      const startTime = performance.now();
+      
+      const response = await fetch(`${this.baseUrl}${endpoint}`, {
+        headers: {
+          'Content-Type': 'application/json',
+          'X-Request-ID': crypto.randomUUID(),
+          'X-Client-Version': process.env.NEXT_PUBLIC_APP_VERSION || '1.0.0',
+          ...options?.headers,
+        },
+        ...options,
+        signal: options.signal || AbortSignal.timeout(30000), // 30s timeout
+      });
+      
+      const duration = performance.now() - startTime;
+      
+      // Track performance metrics
+      span.setAttributes({
+        'http.method': options.method || 'GET',
+        'http.url': `${this.baseUrl}${endpoint}`,
+        'http.status_code': response.status,
+        'http.response_time_ms': duration,
+      });
+      
+      if (!response.ok) {
+        const errorData = await response.text();
+        span.setStatus({ code: SpanStatusCode.ERROR, message: errorData });
+        throw new ApiError(response.status, errorData, {
+          endpoint,
+          method: options.method || 'GET',
+          duration,
+        });
+      }
+      
+      const data = await response.json();
+      
+      // Validate response if schema provided
+      if (schema) {
+        const validationResult = schema.safeParse(data);
+        if (!validationResult.success) {
+          span.setStatus({ 
+            code: SpanStatusCode.ERROR, 
+            message: 'Response validation failed' 
+          });
+          throw new ValidationError('Response validation failed', validationResult.error);
+        }
+        return validationResult.data;
+      }
+      
+      span.setStatus({ code: SpanStatusCode.OK });
+      return data;
+    } catch (error) {
+      span.setStatus({ 
+        code: SpanStatusCode.ERROR, 
+        message: error instanceof Error ? error.message : 'Unknown error' 
+      });
+      throw error;
+    } finally {
+      span.end();
     }
-    
-    return response.json();
   }
 }
+
+// src/infrastructure/database/repositories/BaseRepository.ts
+export abstract class BaseRepository<TEntity, TId> {
+  protected db: Database;
+  protected cache: CacheService;
+  protected logger: Logger;
+  
+  constructor(
+    db: Database,
+    cache: CacheService,
+    logger: Logger
+  ) {
+    this.db = db;
+    this.cache = cache;
+    this.logger = logger;
+  }
+  
+  abstract findById(id: TId): Promise<TEntity | null>;
+  abstract create(entity: Omit<TEntity, 'id'>): Promise<TEntity>;
+  abstract update(id: TId, updates: Partial<TEntity>): Promise<TEntity>;
+  abstract delete(id: TId): Promise<void>;
+  
+  protected async withCaching<T>(
+    key: string,
+    fetcher: () => Promise<T>,
+    ttl: number = 300 // 5 minutes default
+  ): Promise<T> {
+    const cached = await this.cache.get<T>(key);
+    if (cached) {
+      this.logger.debug('Cache hit', { key });
+      return cached;
+    }
+    
+    const data = await fetcher();
+    await this.cache.set(key, data, ttl);
+    this.logger.debug('Cache miss, data fetched and cached', { key });
+    
+    return data;
+  }
+  
+  protected async withTransaction<T>(
+    operation: (trx: Transaction) => Promise<T>
+  ): Promise<T> {
+    return await this.db.transaction(operation);
+  }
+}
+
+// src/infrastructure/monitoring/metrics.ts - Enterprise metrics collection
+import { metrics } from '@opentelemetry/api';
+
+const meter = metrics.getMeter('ecommerce-platform');
+
+export const Metrics = {
+  // Business metrics
+  searchRequests: meter.createCounter('search_requests_total', {
+    description: 'Total number of search requests',
+  }),
+  
+  searchDuration: meter.createHistogram('search_duration_ms', {
+    description: 'Search request duration in milliseconds',
+  }),
+  
+  cartAdditions: meter.createCounter('cart_additions_total', {
+    description: 'Total number of items added to cart',
+  }),
+  
+  checkoutSteps: meter.createCounter('checkout_steps_total', {
+    description: 'Checkout funnel steps completed',
+  }),
+  
+  // Technical metrics
+  apiRequests: meter.createCounter('api_requests_total', {
+    description: 'Total API requests',
+  }),
+  
+  cacheHitRate: meter.createGauge('cache_hit_rate', {
+    description: 'Cache hit rate percentage',
+  }),
+  
+  activeUsers: meter.createUpDownCounter('active_users', {
+    description: 'Number of active users',
+  }),
+  
+  recordSearchRequest(query: string, results: number, duration: number) {
+    this.searchRequests.add(1, {
+      has_query: query.length > 0 ? 'true' : 'false',
+      has_results: results > 0 ? 'true' : 'false',
+    });
+    
+    this.searchDuration.record(duration, {
+      query_length: query.length > 20 ? 'long' : 'short',
+    });
+  },
+  
+  recordCartAddition(productId: string, quantity: number, source: string) {
+    this.cartAdditions.add(1, {
+      source,
+      quantity_range: quantity > 1 ? 'multiple' : 'single',
+    });
+  },
+};
 ```
 
 ### Phase 2: Core Features (Week 2-3)
@@ -879,59 +1420,112 @@ jobs:
 - [ ] **A/B Testing Framework**: Feature flag-based experimentation
 - [ ] **Advanced Monitoring**: Custom metrics and alerting
 
-## 📊 Success Criteria
+## 📊 Enterprise Success Criteria
 
-### Technical Metrics
-- **Test Coverage**: >90% overall, >95% for critical paths
-- **Performance**: All Core Web Vitals green
-- **Accessibility**: WCAG 2.1 AA compliant (automated + manual testing)
-- **Security**: Zero high/critical vulnerabilities
-- **Code Quality**: ESLint score >95, TypeScript strict mode
+### Technical Excellence Metrics
+- **Test Coverage**: >95% overall, >98% for critical business paths
+- **Performance**: All Core Web Vitals green with enterprise thresholds
+  - LCP < 1.5s, INP < 100ms, CLS < 0.05, TTFB < 200ms
+- **Accessibility**: WCAG 2.2 AA compliant with automated and manual validation
+- **Security**: Zero high/critical vulnerabilities, SOC 2 Type II compliance
+- **Code Quality**: ESLint score >98%, TypeScript strict mode, 0 code smells
+- **Bundle Optimization**: <400KB initial bundle, <50KB per route
 
-### Business Metrics
-- **Search Success Rate**: >85% of searches return relevant results
-- **Cart Conversion**: >60% of cart additions lead to checkout intent
-- **User Experience**: <2s time to interactive, <0.1 CLS
-- **Error Rate**: <0.1% unhandled errors
-- **Performance Budget**: <500KB initial bundle size
+### Business Performance Metrics
+- **Search Success Rate**: >90% of searches return relevant results
+- **Semantic Search Accuracy**: >85% relevance score for AI-powered queries
+- **Cart Conversion**: >70% of cart additions lead to checkout intent
+- **Personalization Effectiveness**: >25% lift in conversion through ML recommendations
+- **User Experience**: <1.5s time to interactive, <0.05 CLS, >98% availability
+- **Error Rate**: <0.05% unhandled errors, <100ms error recovery time
+- **Real User Monitoring**: 75th percentile performance meets targets globally
 
-### Process Metrics  
-- **DoD Compliance**: 100% for all required criteria
-- **Documentation Coverage**: All public APIs documented
-- **CI/CD Success**: >99% pipeline success rate
-- **Code Review**: 100% of changes reviewed
-- **Security Scanning**: Automated scanning on every commit
+### Enterprise Process Metrics  
+- **Definition of Done Compliance**: 100% for all required criteria
+- **Documentation Coverage**: All public APIs documented with examples
+- **CI/CD Success**: >99.5% pipeline success rate with automated rollbacks
+- **Code Review**: 100% of changes reviewed with quality gates
+- **Security Scanning**: Automated scanning on every commit with blocking gates
+- **Deployment Frequency**: Multiple deployments per day with zero downtime
+- **Mean Time to Recovery**: <30 minutes for critical issues
 
-## 🎓 Final Evaluation
+### Platform Scalability Metrics
+- **Concurrent Users**: Support 10,000+ concurrent users
+- **Search Throughput**: >1000 queries per second with <200ms latency
+- **Database Performance**: <50ms query response time at 95th percentile
+- **Cache Hit Rate**: >90% for frequently accessed data
+- **API Rate Limiting**: Graceful degradation under high load
+- **Global Performance**: <2s load time from any geographic location
 
-Your capstone project will be evaluated on:
+## 🎓 Enterprise-Grade Final Evaluation
 
-1. **Technical Implementation** (40%)
-   - Code quality and architecture
-   - Performance and optimization
-   - Security implementation
-   - Accessibility compliance
+Your capstone project will be evaluated against Fortune 500 enterprise standards:
 
-2. **Testing Strategy** (25%)
-   - Test coverage and quality
-   - Testing patterns usage
-   - E2E and integration tests
-   - Performance testing
+### 1. **Technical Excellence & Architecture** (35%)
+   - **Domain-Driven Design**: Clear domain boundaries, proper abstraction layers
+   - **Scalable Architecture**: Micro-frontend readiness, modular design patterns
+   - **Performance Engineering**: Sub-second load times, optimized bundle sizes
+   - **Security Implementation**: Zero-trust principles, comprehensive threat modeling
+   - **Accessibility Leadership**: WCAG 2.2 AA+ compliance with inclusive design
 
-3. **Production Readiness** (20%)
-   - DoD compliance
-   - CI/CD implementation
-   - Monitoring and observability
-   - Documentation quality
+### 2. **Quality Engineering & Testing** (25%)
+   - **Comprehensive Test Strategy**: >95% coverage with meaningful test scenarios
+   - **Advanced Testing Patterns**: Contract testing, visual regression, performance testing
+   - **Quality Gates**: Automated quality assurance with blocking CI/CD gates
+   - **Test Automation**: Full E2E automation with cross-browser compatibility
+   - **Chaos Engineering**: Fault tolerance and resilience testing
 
-4. **Process Demonstration** (15%)
-   - Workflow alignment
-   - Team collaboration readiness
-   - Handoff documentation
-   - Presentation quality
+### 3. **Production Readiness & Operations** (25%)
+   - **Enterprise CI/CD**: Blue-green deployments, automated rollbacks, feature flags
+   - **Observability Excellence**: Distributed tracing, custom metrics, alerting
+   - **Documentation Standards**: Comprehensive API docs, ADRs, runbooks
+   - **Security Operations**: Vulnerability scanning, dependency management, compliance
+   - **Performance Monitoring**: Real user monitoring, synthetic testing, SLA tracking
 
-**Ready to build production-ready software that meets enterprise standards? Start your capstone project and demonstrate mastery of all course concepts!**
+### 4. **Innovation & Modern Practices** (15%)
+   - **AI/ML Integration**: Semantic search, personalization, intelligent features
+   - **Modern Framework Usage**: React 19 Server Components, Next.js 15 App Router
+   - **Developer Experience**: Advanced tooling, automation, quality-of-life improvements
+   - **Business Impact**: Measurable improvements in user experience and conversion
+   - **Technical Leadership**: Knowledge sharing, mentoring capability, thought leadership
+
+### Evaluation Criteria
+
+#### **Exceeds Expectations (90-100%)**
+- Implements cutting-edge enterprise patterns that could be adopted industry-wide
+- Demonstrates deep understanding of scalability, security, and performance at scale
+- Creates reusable components and patterns that benefit the entire organization
+- Shows innovation in problem-solving with measurable business impact
+- Documentation and presentation quality suitable for executive stakeholders
+
+#### **Meets Expectations (75-89%)**
+- Successfully implements all required enterprise-grade features
+- Demonstrates solid understanding of production readiness concepts
+- Code quality and architecture meet professional standards
+- Testing strategy covers critical paths with appropriate automation
+- Documentation enables effective team handoff and maintenance
+
+#### **Below Expectations (<75%)**
+- Missing critical enterprise requirements or significant quality gaps
+- Architecture or implementation patterns that wouldn't scale in production
+- Insufficient testing coverage or poor test quality
+- Security vulnerabilities or accessibility compliance failures
+- Documentation gaps that would block production deployment
+
+### **Portfolio Impact**
+
+This capstone project serves as your **flagship portfolio piece** demonstrating:
+
+✅ **Enterprise-Grade Development Skills**  
+✅ **Production-Ready Code Quality**  
+✅ **Modern Technology Stack Mastery**  
+✅ **Security & Accessibility Leadership**  
+✅ **Performance Engineering Expertise**  
+✅ **DevOps & Operational Excellence**  
+✅ **Business-Focused Technical Decision Making**
+
+**Ready to build enterprise software that powers millions of users? Start your capstone project and establish yourself as an elite frontend engineer capable of delivering Fortune 500-quality solutions!**
 
 ---
 
-**🎯 Success in this capstone project proves you can deliver production-ready frontend features that meet the highest enterprise standards.**
+**🚀 Success in this capstone project proves you can architect, build, and deploy production-ready e-commerce platforms that meet the highest enterprise standards and deliver exceptional business value.**
